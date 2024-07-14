@@ -43,10 +43,10 @@ namespace TerrariaBosses
             helper.Events.GameLoop.Saving += this.OnSaving;
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.Content.AssetRequested += assetHelper.OnAssetRequested;
-            assetHelper.AddSound("Hit1", "hit.wav");
-            assetHelper.AddSound("Killed1", "killed.wav");
-            assetHelper.AddSound("Roar", "roar.wav");
-            assetHelper.AddMusic("Music", "music.wav");
+            assetHelper.AddCue("Hit1", "hit.wav");
+            assetHelper.AddCue("Killed1", "killed.wav");
+            assetHelper.AddCue("Roar", "roar.wav");
+            assetHelper.AddCue("Music", "music.wav", "Music", true);
             monitor = this.Monitor;
 
             var harmony = new Harmony(this.ModManifest.UniqueID);
@@ -168,7 +168,6 @@ namespace TerrariaBosses
                 return;
             GameLocation location = Game1.player.currentLocation;
             EyeOfCthulhu EoC = GetEoC();
-            Monitor.Log($"Mine Level: {Game1.CurrentMineLevel}");
             if (
                 CanSpawnAt(location, config.DemonEyeSpawning.SpawnLocation) &&
                 (Game1.timeOfDay >= config.DemonEyeSpawning.SpawnAfter) &&

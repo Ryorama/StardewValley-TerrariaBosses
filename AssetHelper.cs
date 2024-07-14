@@ -17,42 +17,22 @@ namespace TerrariaBosses
             Helper = helper;
         }
         private Dictionary<string, string> assets = new Dictionary<string, string>();
+        List<AudioCueData> cues = new List<AudioCueData>();
         public void AddAssets(string category)
         {
-            foreach (string path in Directory.EnumerateFiles(Path.Combine(this.Helper.DirectoryPath, $"assets\\{category}"), "*.png"))
+            foreach (string path in Directory.EnumerateFiles(Path.Combine(this.Helper.DirectoryPath, "assets", category), "*.png"))
             {
                 assets[$"Mods/GlitchedDeveloper.TerrariaBosses/{category}/{Path.GetFileNameWithoutExtension(path)}"] = path;
             }
         }
-        public void AddSound(string name, string path)
+        public void AddCue(string name, string path, string category = "Sound", bool looped = false)
         {
-            CueDefinition cue = new CueDefinition();
-            cue.name = $"GlitchedDeveloper-TerrariaBosses-{name}";
-            cue.instanceLimit = 1;
-            cue.limitBehavior = CueDefinition.LimitBehavior.ReplaceOldest;
-            SoundEffect audio;
-            string filePathCombined = Path.Combine(this.Helper.DirectoryPath, $"assets\\Sounds\\{path}");
-            using (var stream = new FileStream(filePathCombined, FileMode.Open))
-            {
-                audio = SoundEffect.FromStream(stream);
-            }
-            cue.SetSound(audio, Game1.audioEngine.GetCategoryIndex("Sound"), false);
-            Game1.soundBank.AddCue(cue);
-        }
-        public void AddMusic(string name, string path)
-        {
-            CueDefinition cue = new CueDefinition();
-            cue.name = $"GlitchedDeveloper-TerrariaBosses-{name}";
-            cue.instanceLimit = 1;
-            cue.limitBehavior = CueDefinition.LimitBehavior.ReplaceOldest;
-            SoundEffect audio;
-            string filePathCombined = Path.Combine(this.Helper.DirectoryPath, $"assets\\Sounds\\{path}");
-            using (var stream = new FileStream(filePathCombined, FileMode.Open))
-            {
-                audio = SoundEffect.FromStream(stream);
-            }
-            cue.SetSound(audio, Game1.audioEngine.GetCategoryIndex("Music"), true);
-            Game1.soundBank.AddCue(cue);
+            AudioCueData cue = new AudioCueData();
+            cue.Id = $"GlitchedDeveloper-TerrariaBosses-{name}";
+            cue.FilePaths = new List<string> { Path.Combine(this.Helper.DirectoryPath, "assets", "Sounds", path) };
+            cue.Category = category;
+            cue.Looped = looped;
+            cues.Add(cue);
         }
         private MachineOutputRule GenerateFurnaceRecipe(string ruleID, string inputID, string outputID)
         {
@@ -397,6 +377,17 @@ namespace TerrariaBosses
                 {
                     var data = asset.AsDictionary<string, string>().Data;
                     data["GlitchedDeveloper.TerrariaBosses_EyeOfCthulhuTrophy"] = "Eye of Cthulhu Trophy/painting/2 2/2 2/1/10000/-1/Eye of Cthulhu Trophy/0/Mods\\GlitchedDeveloper.TerrariaBosses\\Items\\Trophies/true";
+                });
+            }
+            else if (e.NameWithoutLocale.IsEquivalentTo("Data/AudioChanges"))
+            {
+                e.Edit(asset =>
+                {
+                    var data = asset.AsDictionary<string, AudioCueData>().Data;
+                    foreach(var cue in cues)
+                    {
+                        data[cue.Id] = cue;
+                    }
                 });
             }
             else
