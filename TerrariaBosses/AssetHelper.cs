@@ -71,16 +71,16 @@ namespace TerrariaBosses
                 e.Edit(asset =>
                 {
                     var data = asset.AsDictionary<string, string>().Data;
-                    data["Demon Eye"] = "60/18/0/0/true/1000//2/.01/99999/2/.0/false/20/DemonEye";
-                    data["Cataract Eye"] = "65/18/0/0/true/1000//4/.01/99999/2/.0/false/20/DemonEye";
-                    data["Sleepy Eye"] = "60/16/0/0/true/1000//2/.01/99999/2/.0/false/20/DemonEye";
-                    data["Dilated Eye"] = "50/18/0/0/true/1000//2/.01/99999/2/.0/false/20/DemonEye";
-                    data["Green Eye"] = "60/20/0/0/true/1000//0/.01/99999/2/.0/false/20/DemonEye";
-                    data["Purple Eye"] = "60/14/0/0/true/1000//4/.01/99999/2/.0/false/20/DemonEye";
-                    data["Owl Demon Eye"] = "75/16/0/0/true/1000//6/.01/99999/2/.0/false/20/DemonEye";
-                    data["Spaceship Demon Eye"] = "60/20/0/0/true/1000//4/.01/99999/2/.0/false/20/DemonEye";
-                    data["Eye of Cthulhu"] = "2800/15/0/0/true/1000//12/.01/99999/2/.0/false/20/EyeOfCthulhu";
-                    data["Servant of Cthulhu"] = "8/12/0/0/true/1000//0/.01/99999/2/.0/false/20/DemonEye";
+                    data["DemonEye"] = "60/18/0/0/true/1000//2/.01/99999/2/.0/false/20/DemonEye";
+                    data["CataractEye"] = "65/18/0/0/true/1000//4/.01/99999/2/.0/false/20/DemonEye";
+                    data["SleepyEye"] = "60/16/0/0/true/1000//2/.01/99999/2/.0/false/20/DemonEye";
+                    data["DilatedEye"] = "50/18/0/0/true/1000//2/.01/99999/2/.0/false/20/DemonEye";
+                    data["GreenEye"] = "60/20/0/0/true/1000//0/.01/99999/2/.0/false/20/DemonEye";
+                    data["PurpleEye"] = "60/14/0/0/true/1000//4/.01/99999/2/.0/false/20/DemonEye";
+                    data["OwlDemonEye"] = "75/16/0/0/true/1000//6/.01/99999/2/.0/false/20/DemonEye";
+                    data["SpaceshipDemonEye"] = "60/20/0/0/true/1000//4/.01/99999/2/.0/false/20/DemonEye";
+                    data["EyeOfCthulhu"] = "2800/15/0/0/true/1000//12/.01/99999/2/.0/false/20/EyeOfCthulhu";
+                    data["ServantOfCthulhu"] = "8/12/0/0/true/1000//0/.01/99999/2/.0/false/20/DemonEye";
                 });
             }
             else if (e.NameWithoutLocale.IsEquivalentTo("Data/Objects"))
