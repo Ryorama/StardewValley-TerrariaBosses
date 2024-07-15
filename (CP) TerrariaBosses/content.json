@@ -1,0 +1,200 @@
+{
+	"Format": "2.0.0",
+	"Changes": 
+	[
+		//Items
+		{
+            "Action": "Load",
+            "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Items\\CrimtaneTools",
+            "FromFile": "assets/Items/CrimtaneTools.png"
+        },
+		{
+            "Action": "Load",
+            "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Items\\DemoniteTools",
+            "FromFile": "assets/Items/DemoniteTools.png"
+        },
+		{
+            "Action": "Load",
+            "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Items\\Objects",
+            "FromFile": "assets/Items/Objects.png"
+        },
+		{
+            "Action": "Load",
+            "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Items\\Trophies",
+            "FromFile": "assets/Items/Trophies.png"
+        },
+		
+		//Debris
+		{
+           "Action": "Load",
+			"Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Debris\\Crimtane",
+           "FromFile": "assets/Debris/Crimtane.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Debris\\Demonite",
+           "FromFile": "assets/Debris/Demonite.png"
+        },
+		
+		//Gore
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\1",
+           "FromFile": "assets/Gore/1.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\2",
+           "FromFile": "assets/Gore/2.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\6",
+           "FromFile": "assets/Gore/6.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\7",
+           "FromFile": "assets/Gore/7.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\8",
+           "FromFile": "assets/Gore/8.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\9",
+           "FromFile": "assets/Gore/9.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\10",
+           "FromFile": "assets/Gore/10.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\247",
+           "FromFile": "assets/Gore/247.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\248",
+           "FromFile": "assets/Gore/248.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\249",
+           "FromFile": "assets/Gore/249.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\250",
+           "FromFile": "assets/Gore/250.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\251",
+           "FromFile": "assets/Gore/251.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\252",
+           "FromFile": "assets/Gore/252.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\253",
+           "FromFile": "assets/Gore/253.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\447",
+           "FromFile": "assets/Gore/447.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\448",
+           "FromFile": "assets/Gore/448.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\449",
+           "FromFile": "assets/Gore/449.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\450",
+           "FromFile": "assets/Gore/450.png"
+        },
+		
+		//Monsters
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\CataractEye",
+           "FromFile": "assets/Monsters/CataractEye.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\DemonEye",
+           "FromFile": "assets/Monsters/DemonEye.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\DilatedEye",
+           "FromFile": "assets/Monsters/DilatedEye.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\EyeOfCthulhu",
+           "FromFile": "assets/Monsters/EyeOfCthulhu.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\GreenEye",
+           "FromFile": "assets/Monsters/GreenEye.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\OwlDemonEye",
+           "FromFile": "assets/Monsters/OwlDemonEye.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\PurpleEye",
+           "FromFile": "assets/Monsters/PurpleEye.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\ServantOfCthulhu",
+           "FromFile": "assets/Monsters/ServantOfCthulhu.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\SleepyEye",
+           "FromFile": "assets/Monsters/SleepyEye.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\SpaceshipDemonEye",
+           "FromFile": "assets/Monsters/SpaceshipDemonEye.png"
+        },
+
+		//UI
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\NPC_Head_Boss_0",
+           "FromFile": "assets/UI/NPC_Head_Boss_0.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\NPC_Head_Boss_1",
+           "FromFile": "assets/UI/NPC_Head_Boss_1.png"
+        },
+		{
+           "Action": "Load",
+		   "Target": "Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\UI_BossBar",
+           "FromFile": "assets/UI/UI_BossBar.png"
+        }
+    ]
+}
