@@ -135,15 +135,12 @@ public class EyeOfCthulhu : Monster
     protected override void updateAnimation(GameTime time)
     {
         base.updateAnimation(time);
-        if (wasHitCounter >= 0)
-        {
-            wasHitCounter -= time.ElapsedGameTime.Milliseconds;
-        }
-
         if (currentPhase > 1f)
-            Sprite.Animate(time, 3, 3, 200f);
+            Sprite.Animate(time, 3, 3, 0);
         else
-            Sprite.Animate(time, 0, 3, 200f);
+            Sprite.Animate(time, 0, 3, 0);
+
+        ModEntry.monitor.LogOnce("Anim frame: " + Sprite.currentFrame.ToString());
     }
 
     private float currentPhase;
@@ -393,7 +390,7 @@ public class EyeOfCthulhu : Monster
                     }
                 }
             }
-            float lifeForSecondPhase = 0.5f;
+            float lifeForSecondPhase = 0.75f;
             if (base.Health < base.MaxHealth * lifeForSecondPhase)
             {
                 currentPhase = 1f;

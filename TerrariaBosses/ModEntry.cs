@@ -227,10 +227,10 @@ namespace TerrariaBosses
             if (EoC != null)
             {
                 Texture2D icon;
-                if (EoC.Health / EoC.MaxHealth > 0.5)
+                if (EoC.Health > EoC.MaxHealth * 0.75)
                     icon = Game1.content.Load<Texture2D>("Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\NPC_Head_Boss_0");
                 else
-                    icon = Game1.content.Load<Texture2D>("Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\UI/NPC_Head_Boss_1");
+                    icon = Game1.content.Load<Texture2D>("Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\NPC_Head_Boss_1");
                 BossBar.DrawFancyBar(Game1.spriteBatch, EoC.Health, EoC.MaxHealth, icon);
             }
         }
