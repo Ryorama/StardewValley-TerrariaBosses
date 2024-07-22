@@ -44,15 +44,15 @@ public class DemonEye : Monster
 
     private Dictionary<string, string[]> goreIDs = new Dictionary<string, string[]>()
     {
-        { "DemonEye", new string[] { "1", "2" } },
-        { "CataractEye", new string[] { "249", "2" } },
-        { "SleepyEye", new string[] { "248", "2" } },
-        { "DilatedEye", new string[] { "247", "2" } },
-        { "GreenEye", new string[] { "252", "253" } },
-        { "PurpleEye", new string[] { "250", "251" } },
-        { "OwlDemonEye", new string[] { "447", "448" } },
-        { "SpaceshipDemonEye", new string[] { "449", "450" } },
-        { "ServantOfCthulhu", new string[] { "6", "7" } }
+        { "Demon Eye", new string[] { "1", "2" } },
+        { "Cataract Eye", new string[] { "249", "2" } },
+        { "Sleepy Eye", new string[] { "248", "2" } },
+        { "Dilated Eye", new string[] { "247", "2" } },
+        { "Green Eye", new string[] { "252", "253" } },
+        { "Purple Eye", new string[] { "250", "251" } },
+        { "Owl Demon Eye", new string[] { "447", "448" } },
+        { "Spaceship Demon Eye", new string[] { "449", "450" } },
+        { "Servant of Cthulhu", new string[] { "6", "7" } }
     };
 
     public DemonEye()
@@ -79,12 +79,12 @@ public class DemonEye : Monster
         base.HideShadow = true;
         base.Scale = 1f;
         spriteFrameCount = 2;
-        spritePath = $"Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\{name}";
+        spritePath = $"Mods/GlitchedDeveloper.TerrariaBosses/Monsters/{name}";
         Texture2D texture = Game1.content.Load<Texture2D>(spritePath);
         eyeWidth = texture.Width / spriteFrameCount;
         eyeHeight = texture.Height;
-        hitSoundID = "Hit1";
-        killSoundID = "Killed1";
+        hitSoundID = "Hit 1";
+        killSoundID = "Killed 1";
         reloadSprite();
     }
 
@@ -104,7 +104,7 @@ public class DemonEye : Monster
         velocity.X = xTrajectory / 3;
         velocity.Y = yTrajectory / 3;
         wasHitCounter = 500;
-        base.currentLocation.playSound($"GlitchedDeveloper-TerrariaBosses-Hit1");
+        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_{hitSoundID}");
         if (base.Health <= 0)
         {
             killer.Value = who;
@@ -128,15 +128,15 @@ public class DemonEye : Monster
             foreach (string id in goreIDs[name])
             {
                 Rectangle hitbox = GetBoundingBox();
-                base.currentLocation.debris.Add(new Gore($"Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\{id}", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+                base.currentLocation.debris.Add(new Gore($"Mods/GlitchedDeveloper.TerrariaBosses/Gore/{id}", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
             }
         }
-        base.currentLocation.localSound($"GlitchedDeveloper-TerrariaBosses-{killSoundID}");
+        base.currentLocation.localSound($"GlitchedDeveloper.TerrariaBosses_{killSoundID}");
     }
     public override List<Item> getExtraDropItems()
     {
         List<Item> list = new List<Item>();
-        if (name != "ServantOfCthulhu" && Game1.random.Next(3) == 0)
+        if (name != "Servant of Cthulhu" && Game1.random.Next(3) == 0)
         {
             list.Add(ItemRegistry.Create("GlitchedDeveloper.TerrariaBosses_Lens"));
         }
@@ -145,8 +145,12 @@ public class DemonEye : Monster
 
     public override void drawAboveAllLayers(SpriteBatch b)
     {
+        if (Sprite.SpriteWidth != eyeWidth || Sprite.SpriteHeight != eyeHeight)
+        {
+            reloadSprite();
+            Sprite.UpdateSourceRect();
+        }
         int y = base.StandingPixel.Y;
-        Rectangle value = new Rectangle(0, 0, eyeWidth, eyeHeight);
         Vector2 vector2 = base.Position;
 
         if (Utility.isOnScreen(vector2, 128))
@@ -157,16 +161,16 @@ public class DemonEye : Monster
 
             Vector2 vector4 = Game1.GlobalToLocal(Game1.viewport, vector2) + drawOffset + new Vector2(0f, yJumpOffset);
             int height = GetBoundingBox().Height;
-            b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), value, Color.White, rotation, new Vector2(eyeWidth / 2, eyeHeight / 2), Math.Max(0.2f, scale.Value) * 4f, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f)));
+            b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), Sprite.SourceRect, Color.White, rotation, new Vector2(eyeWidth / 2, eyeHeight / 2), Math.Max(0.2f, scale.Value) * 4f, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f)));
             if (isGlowing)
             {
-                b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), value, glowingColor * glowingTransparency, rotation, new Vector2(eyeWidth / 2, eyeHeight / 2), Math.Max(0.2f, scale.Value) * 4f, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f + 0.0001f)));
+                b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), Sprite.SourceRect, glowingColor * glowingTransparency, rotation, new Vector2(eyeWidth / 2, eyeHeight / 2), Math.Max(0.2f, scale.Value) * 4f, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f + 0.0001f)));
             }
-            //var rectangle = GetBoundingBox();
-            //var graphicsDevice = Game1.game1.GraphicsDevice;
-            //Texture2D pixel = new Texture2D(graphicsDevice, 1, 1);
+            ////Draw Hitbox for Debugging
+            //var rect = GetBoundingBox();
+            //Texture2D pixel = new Texture2D(Game1.game1.GraphicsDevice, 1, 1);
             //pixel.SetData(new[] { Color.Red });
-            //b.Draw(pixel, Game1.GlobalToLocal(Game1.viewport, new Vector2(rectangle.X, rectangle.Y)), rectangle, Color.Red);
+            //b.Draw(pixel, Game1.GlobalToLocal(Game1.viewport, new Vector2(rect.X, rect.Y)), rect, Color.Red);
         }
     }
 

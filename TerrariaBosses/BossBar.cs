@@ -43,7 +43,7 @@ namespace TerrariaBosses
         }
         public static void DrawFancyBar(SpriteBatch spriteBatch, float lifeAmount, float lifeMax, Texture2D barIconTexture, Rectangle barIconFrame)
         {
-            Texture2D value = Game1.content.Load<Texture2D>("Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\UI_BossBar");
+            Texture2D value = Game1.content.Load<Texture2D>("Mods/GlitchedDeveloper.TerrariaBosses/UI/UI_BossBar");
             Point p = new Point(456, 22);
             Point p2 = new Point(32, 24);
             int verticalFrames = 6;

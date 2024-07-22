@@ -16,37 +16,31 @@ namespace TerrariaBosses
         public static IMonitor monitor;
         private string[] demonEyeVariants =
         {
-            "DemonEye",
-            "CataractEye",
-            "SleepyEye",
-            "DilatedEye",
-            "GreenEye",
-            "PurpleEye"
+            "Demon Eye",
+            "Cataract Eye",
+            "Sleepy Eye",
+            "Dilated Eye",
+            "Green Eye",
+            "Purple Eye"
         };
         private string[] fallDemonEyeVariants =
         {
-            "DemonEye",
-            "CataractEye",
-            "SleepyEye",
-            "DilatedEye",
-            "GreenEye",
-            "PurpleEye",
-            "Owl DemonEye",
-            "SpaceshipDemon Eye"
+            "Demon Eye",
+            "Cataract Eye",
+            "Sleepy Eye",
+            "Dilated Eye",
+            "Green Eye",
+            "Purple Eye",
+            "Owl Demon Eye",
+            "Spaceship Demon Eye"
         };
         public override void Entry(IModHelper helper)
         {
-            AssetHelper assetHelper = new AssetHelper(helper);
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
             helper.Events.Display.RenderingHud += this.OnRenderingHud;
             helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
             helper.Events.GameLoop.Saving += this.OnSaving;
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
-            helper.Events.Content.AssetRequested += assetHelper.OnAssetRequested;
-            assetHelper.AddCue("Hit1", "hit.wav");
-            assetHelper.AddCue("Killed1", "killed.wav");
-            assetHelper.AddCue("Roar", "roar.wav");
-            assetHelper.AddCue("Music", "music.wav", "Music", true);
             monitor = this.Monitor;
 
             var harmony = new Harmony(this.ModManifest.UniqueID);
@@ -112,7 +106,7 @@ namespace TerrariaBosses
                     {
                         Game1.player.removeItemFromInventory(item);
                     }
-                    Game1.playSound("GlitchedDeveloper-TerrariaBosses-Roar");
+                    Game1.playSound("GlitchedDeveloper.TerrariaBosses_Roar 0");
                 }
             }
         }
@@ -198,26 +192,23 @@ namespace TerrariaBosses
             }
             if (Game1.currentSong != null)
             {
-                if (EoC != null && Game1.currentSong.Name != "GlitchedDeveloper-TerrariaBosses-Music" && Game1.requestedMusicTrack != "GlitchedDeveloper-TerrariaBosses-Music")
+                if (EoC != null && Game1.currentSong.Name != "GlitchedDeveloper.TerrariaBosses_Boss 1" && Game1.requestedMusicTrack != "GlitchedDeveloper.TerrariaBosses_Boss 1")
                 {
-                    Monitor.Log("Change Music To Boss");
                     previousSong = Game1.currentSong.Name;
-                    Game1.changeMusicTrack("GlitchedDeveloper-TerrariaBosses-Music");
+                    Game1.changeMusicTrack("GlitchedDeveloper.TerrariaBosses_Boss 1");
                 }
-                else if (EoC == null && Game1.currentSong.Name == "GlitchedDeveloper-TerrariaBosses-Music" && Game1.requestedMusicTrack == "GlitchedDeveloper-TerrariaBosses-Music")
+                else if (EoC == null && Game1.currentSong.Name == "GlitchedDeveloper.TerrariaBosses_Boss 1" && Game1.requestedMusicTrack == "GlitchedDeveloper.TerrariaBosses_Boss 1")
                 {
-                    Monitor.Log("Change Music To Vanilla");
                     Game1.changeMusicTrack(previousSong);
                     previousSong = null;
                 }
             }
             else
             {
-                if (EoC != null && Game1.requestedMusicTrack != "GlitchedDeveloper-TerrariaBosses-Music")
+                if (EoC != null && Game1.requestedMusicTrack != "GlitchedDeveloper.TerrariaBosses_Boss 1")
                 {
-                    Monitor.Log("Change Music To Boss");
                     previousSong = "none";
-                    Game1.changeMusicTrack("GlitchedDeveloper-TerrariaBosses-Music");
+                    Game1.changeMusicTrack("GlitchedDeveloper.TerrariaBosses_Boss 1");
                 }
             }
         }
@@ -227,10 +218,10 @@ namespace TerrariaBosses
             if (EoC != null)
             {
                 Texture2D icon;
-                if (EoC.Health > EoC.MaxHealth * 0.75)
-                    icon = Game1.content.Load<Texture2D>("Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\NPC_Head_Boss_0");
+                if (EoC.Health > EoC.MaxHealth * 0.5)
+                    icon = Game1.content.Load<Texture2D>("Mods/GlitchedDeveloper.TerrariaBosses/UI/NPC_Head_Boss_0");
                 else
-                    icon = Game1.content.Load<Texture2D>("Mods\\GlitchedDeveloper.TerrariaBosses\\UI\\NPC_Head_Boss_1");
+                    icon = Game1.content.Load<Texture2D>("Mods/GlitchedDeveloper.TerrariaBosses/UI/NPC_Head_Boss_1");
                 BossBar.DrawFancyBar(Game1.spriteBatch, EoC.Health, EoC.MaxHealth, icon);
             }
         }

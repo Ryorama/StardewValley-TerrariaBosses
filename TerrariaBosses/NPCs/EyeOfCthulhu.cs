@@ -30,7 +30,7 @@ public class EyeOfCthulhu : Monster
     }
 
     public EyeOfCthulhu(Vector2 position)
-        : base("EyeOfCthulhu", position)
+        : base("Eye of Cthulhu", position)
     {
         InitializeAttributes();
     }
@@ -52,7 +52,7 @@ public class EyeOfCthulhu : Monster
 
     public override void reloadSprite(bool onlyAppearance = false)
     {
-        Sprite = new AnimatedSprite("Mods\\GlitchedDeveloper.TerrariaBosses\\Monsters\\EyeOfCthulhu");
+        Sprite = new AnimatedSprite("Mods/GlitchedDeveloper.TerrariaBosses/Monsters/Eye of Cthulhu");
         Sprite.SpriteWidth = 55;
         Sprite.SpriteHeight = 83;
         Sprite.SourceRect = new Rectangle(0, 0, 55, 83);
@@ -64,7 +64,7 @@ public class EyeOfCthulhu : Monster
         int num = (int)(damage - (resilience * 0.5));
         base.Health -= num;
         wasHitCounter = 500;
-        base.currentLocation.playSound($"GlitchedDeveloper-TerrariaBosses-Hit1");
+        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Hit 1");
         if (base.Health <= 0)
         {
             killer.Value = who;
@@ -86,12 +86,12 @@ public class EyeOfCthulhu : Monster
         Rectangle hitbox = GetBoundingBox();
         if (ModEntry.config.SpawnGore)
         {
-            base.currentLocation.debris.Add(new Gore("Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\9", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
-            base.currentLocation.debris.Add(new Gore("Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\9", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
-            base.currentLocation.debris.Add(new Gore("Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\10", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
-            base.currentLocation.debris.Add(new Gore("Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\10", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/9", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/9", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/10", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/10", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
         }
-        base.currentLocation.localSound("GlitchedDeveloper-TerrariaBosses-Killed1");
+        base.currentLocation.localSound("GlitchedDeveloper.TerrariaBosses_Killed 1");
     }
 
     public override List<Item> getExtraDropItems()
@@ -110,18 +110,22 @@ public class EyeOfCthulhu : Monster
 
     public override void drawAboveAllLayers(SpriteBatch b)
     {
+        if (Sprite.SpriteWidth != 55 || Sprite.SpriteHeight != 83)
+        {
+            reloadSprite();
+            Sprite.UpdateSourceRect();
+        }
         int y = base.StandingPixel.Y;
-        Rectangle value = new Rectangle(0, 0, 55, 83);
         Vector2 vector2 = base.Position;
 
         if (Utility.isOnScreen(vector2, 128))
         {
             Vector2 vector4 = Game1.GlobalToLocal(Game1.viewport, vector2) + drawOffset + new Vector2(0f, yJumpOffset);
             int height = GetBoundingBox().Height;
-            b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), value, Color.White, rotation, new Vector2(55 / 2, 83 / 2), Math.Max(0.2f, scale.Value) * 4f, SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f)));
+            b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), Sprite.SourceRect, Color.White, rotation, new Vector2(55 / 2, 83 / 2), Math.Max(0.2f, scale.Value) * 4f, SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f)));
             if (isGlowing)
             {
-                b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), value, glowingColor * glowingTransparency, rotation, new Vector2(55 / 2, 83 / 2), Math.Max(0.2f, scale.Value) * 4f, SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f + 0.0001f)));
+                b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), Sprite.SourceRect, glowingColor * glowingTransparency, rotation, new Vector2(55 / 2, 83 / 2), Math.Max(0.2f, scale.Value) * 4f, SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f + 0.0001f)));
             }
         }
     }
@@ -135,12 +139,15 @@ public class EyeOfCthulhu : Monster
     protected override void updateAnimation(GameTime time)
     {
         base.updateAnimation(time);
-        if (currentPhase > 1f)
-            Sprite.Animate(time, 3, 3, 0);
-        else
-            Sprite.Animate(time, 0, 3, 0);
+        if (wasHitCounter >= 0)
+        {
+            wasHitCounter -= time.ElapsedGameTime.Milliseconds;
+        }
 
-        ModEntry.monitor.LogOnce("Anim frame: " + Sprite.currentFrame.ToString());
+        if (currentPhase > 1f)
+            Sprite.Animate(time, 3, 3, 200f);
+        else
+            Sprite.Animate(time, 0, 3, 200f);
     }
 
     private float currentPhase;
@@ -332,11 +339,11 @@ public class EyeOfCthulhu : Monster
                         servantVelocity.Y = distY * distScale;
                         servantPos.X += servantVelocity.X * 10f;
                         servantPos.Y += servantVelocity.Y * 10f;
-                        DemonEye servantNPC = new DemonEye(servantPos, "ServantOfCthulhu");
+                        DemonEye servantNPC = new DemonEye(servantPos, "Servant of Cthulhu");
                         servantNPC.velocity.X = servantVelocity.X;
                         servantNPC.velocity.Y = servantVelocity.Y;
                         base.currentLocation.addCharacter(servantNPC);
-                        base.currentLocation.playSound($"GlitchedDeveloper-TerrariaBosses-Hit1");
+                        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Hit 1");
                     }
                 }
             }
@@ -390,7 +397,7 @@ public class EyeOfCthulhu : Monster
                     }
                 }
             }
-            float lifeForSecondPhase = 0.75f;
+            float lifeForSecondPhase = 0.5f;
             if (base.Health < base.MaxHealth * lifeForSecondPhase)
             {
                 currentPhase = 1f;
@@ -436,7 +443,7 @@ public class EyeOfCthulhu : Monster
                 servantVelocity.Y = randomTargetY * servantSpeed;
                 servantPos.X += servantVelocity.X * 10f * 2;
                 servantPos.Y += servantVelocity.Y * 10f * 2;
-                DemonEye servantNPC = new DemonEye(servantPos, "ServantOfCthulhu");
+                DemonEye servantNPC = new DemonEye(servantPos, "Servant of Cthulhu");
                 servantNPC.velocity.X = servantVelocity.X;
                 servantNPC.velocity.Y = servantVelocity.Y;
                 base.currentLocation.addCharacter(servantNPC);
@@ -458,14 +465,14 @@ public class EyeOfCthulhu : Monster
                     }
                     else
                     {
-                        base.currentLocation.playSound($"GlitchedDeveloper-TerrariaBosses-Hit1");
+                        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Hit 1");
                         Rectangle hitbox = GetBoundingBox();
                         if (ModEntry.config.SpawnGore)
                         {
-                            base.currentLocation.debris.Add(new Gore("Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\8", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
-                            base.currentLocation.debris.Add(new Gore("Mods\\GlitchedDeveloper.TerrariaBosses\\Gore\\8", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+                            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/8", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+                            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/8", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
                         }
-                        base.currentLocation.playSound($"GlitchedDeveloper-TerrariaBosses-Roar");
+                        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Roar 0");
                     }
                 }
             }
@@ -540,7 +547,7 @@ public class EyeOfCthulhu : Monster
         }
         else if (currentAttackMode == 1f)
         {
-            base.currentLocation.playSound($"GlitchedDeveloper-TerrariaBosses-Roar");
+            base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Roar 0");
             rotation = targetAngle;
             float maxSpeed = 6.8f * 2;
             Vector2 eocCenter = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
