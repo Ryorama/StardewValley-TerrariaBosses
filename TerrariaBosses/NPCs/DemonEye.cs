@@ -20,10 +20,6 @@ public class DemonEye : Monster
 
     private int wasHitCounter;
 
-    private float targetRotation;
-
-    private bool turningRight;
-
     private readonly NetFarmerRef killer = new NetFarmerRef().Delayed(interpolationWait: false);
 
     public List<Vector3> segments = new List<Vector3>();
@@ -86,6 +82,24 @@ public class DemonEye : Monster
         hitSoundID = "Hit 1";
         killSoundID = "Killed 1";
         reloadSprite();
+        damageToFarmer.Value = GetAttackDamage_ScaledByStrength(base.damageToFarmer);
+    }
+    public int GetAttackDamage_ScaledByStrength(float normalDamage)
+    {
+        float damageMultiplier = 1f;
+        switch (ModEntry.config.Difficulty)
+        {
+            case "Expert":
+                damageMultiplier = 2f;
+                break;
+            case "Master":
+                damageMultiplier = 3f;
+                break;
+            case "Legendary":
+                damageMultiplier = 3f;
+                break;
+        }
+        return (int)(normalDamage * damageMultiplier);
     }
 
     public override void reloadSprite(bool onlyAppearance = false)
@@ -136,9 +150,14 @@ public class DemonEye : Monster
     public override List<Item> getExtraDropItems()
     {
         List<Item> list = new List<Item>();
-        if (name != "Servant of Cthulhu" && Game1.random.Next(3) == 0)
+        if (Name != "Servant of Cthulhu")
         {
-            list.Add(ItemRegistry.Create("GlitchedDeveloper.TerrariaBosses_Lens"));
+            if (Game1.random.Next(3) == 0)
+                list.Add(ItemRegistry.Create("GlitchedDeveloper.TerrariaBosses_Lens"));
+            if (Name == "Owl Demon Eye" || Name == "Spaceship Demon Eye")
+                list.Add(ItemRegistry.Create("GlitchedDeveloper.TerrariaBosses_SilverCoin"));
+            else
+                list.Add(ItemRegistry.Create("GlitchedDeveloper.TerrariaBosses_CopperCoin", 75));
         }
         return list;
     }

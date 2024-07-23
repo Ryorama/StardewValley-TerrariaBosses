@@ -21,7 +21,7 @@ namespace TerrariaBosses.Patches
         {
             if (__instance.itemId.Value == "(O)GlitchedDeveloper.TerrariaBosses_CrimtaneOre")
             {
-                createRadialDebris(location, "Mods\\GlitchedDeveloper.TerrariaBosses\\Debris\\Crimtane", new Rectangle(0, 0, 32, 16), (int)(__instance.position.X + 32f) / 64, (int)(__instance.position.Y + 32f) / 64, 6);
+                createRadialDebris(location, "Mods/GlitchedDeveloper.TerrariaBosses/Debris/Crimtane", new Rectangle(0, 0, 32, 16), (int)(__instance.position.X + 32f) / 64, (int)(__instance.position.Y + 32f) / 64, 6);
                 if (!string.IsNullOrEmpty(__instance.collisionSound.Value))
                 {
                     location.playSound(__instance.collisionSound);
@@ -36,7 +36,7 @@ namespace TerrariaBosses.Patches
             }
             else if (__instance.itemId.Value == "(O)GlitchedDeveloper.TerrariaBosses_DemoniteOre")
             {
-                createRadialDebris(location, "Mods\\GlitchedDeveloper.TerrariaBosses\\Debris\\Demonite", new Rectangle(0, 0, 32, 16), (int)(__instance.position.X + 32f) / 64, (int)(__instance.position.Y + 32f) / 64, 6);
+                createRadialDebris(location, "Mods/GlitchedDeveloper.TerrariaBosses/Debris/Demonite", new Rectangle(0, 0, 32, 16), (int)(__instance.position.X + 32f) / 64, (int)(__instance.position.Y + 32f) / 64, 6);
                 if (!string.IsNullOrEmpty(__instance.collisionSound.Value))
                 {
                     location.playSound(__instance.collisionSound);

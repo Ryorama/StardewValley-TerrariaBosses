@@ -7,6 +7,7 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using GenericModConfigMenu;
 using StardewValley.Locations;
+using StardewValley.Tools;
 
 namespace TerrariaBosses
 {
@@ -14,6 +15,8 @@ namespace TerrariaBosses
     {
         public static Config config;
         public static IMonitor monitor;
+        public static bool expertMode;
+        public static bool getGoodWorld;
         private string[] demonEyeVariants =
         {
             "Demon Eye",
@@ -41,6 +44,7 @@ namespace TerrariaBosses
             helper.Events.GameLoop.OneSecondUpdateTicking += this.OnOneSecondUpdateTicking;
             helper.Events.GameLoop.Saving += this.OnSaving;
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+            helper.Events.Player.InventoryChanged += this.OnInventoryChanged;
             monitor = this.Monitor;
 
             var harmony = new Harmony(this.ModManifest.UniqueID);
@@ -62,6 +66,8 @@ namespace TerrariaBosses
             );
 
             config = this.Helper.ReadConfig<Config>();
+            expertMode = config.Difficulty != "Classic";
+            getGoodWorld = config.Difficulty == "Legendary";
         }
         private Vector2 GetSpawnLocation()
         {
@@ -109,6 +115,10 @@ namespace TerrariaBosses
                     Game1.playSound("GlitchedDeveloper.TerrariaBosses_Roar 0");
                 }
             }
+            //if (e.Button == SButton.OemTilde)
+            //{
+            //    Game1.currentLocation.addCharacter(new Slime(Game1.player.Position, "Blue Slime"));
+            //}
         }
         public EyeOfCthulhu? GetEoC()
         {
@@ -150,6 +160,37 @@ namespace TerrariaBosses
         }
 
         string previousSong;
+        private Vector2 pickRandomSpawnPosition(int areaAroundScreen)
+        {
+            var v = Game1.viewport;
+            var p = new Vector2(v.X, v.Y) - new Vector2(areaAroundScreen, areaAroundScreen);
+            int x = v.X;
+            int y = v.Y;
+            int w = v.Width;
+            int h = v.Height;
+            int sw = w + areaAroundScreen * 2;
+            int sh = h + areaAroundScreen * 2;
+            int idx = Game1.random.Next(sw * sh - w * h);
+            if (idx / sw < areaAroundScreen)
+                return new Vector2(idx % sw, (int)Math.Floor((double)(idx / sw))) + p;
+            else
+            {
+                idx -= areaAroundScreen * sw;
+                if (idx > areaAroundScreen * 2 * h)
+                {
+                    idx -= areaAroundScreen * 2 * h;
+                    return new Vector2(idx % sw, h + areaAroundScreen + (int)Math.Floor((double)(idx / sw))) + p;
+                }
+                else
+                {
+                    if (idx % (areaAroundScreen * 2) < areaAroundScreen)
+                        return new Vector2(idx % (areaAroundScreen * 2), areaAroundScreen + (int)Math.Floor((double)(idx / (areaAroundScreen * 2)))) + p;
+                    else
+                        return new Vector2(idx % (areaAroundScreen * 2) + w, areaAroundScreen + (int)Math.Floor((double)(idx / (areaAroundScreen * 2)))) + p;
+                }
+            }
+        }
+
         private void OnOneSecondUpdateTicking(object? sender, OneSecondUpdateTickingEventArgs e)
         {
             if (!Context.IsWorldReady)
@@ -165,22 +206,7 @@ namespace TerrariaBosses
                 Game1.random.NextDouble() < (double)config.DemonEyeSpawning.SpawnChance / 100)
             {
                 Monitor.Log("Spawn Demon Eye");
-                Vector2 position;
-                switch (Game1.random.Next(4))
-                {
-                    case 0:
-                        position = new Vector2(Game1.random.Next(-10, location.Map.DisplayWidth + 10), -100);
-                        break;
-                    case 1:
-                        position = new Vector2(Game1.random.Next(-10, location.Map.DisplayWidth + 10), 100);
-                        break;
-                    case 2:
-                        position = new Vector2(-100, Game1.random.Next(-10, location.Map.DisplayWidth + 10));
-                        break;
-                    default:
-                        position = new Vector2(100, Game1.random.Next(-10, location.Map.DisplayWidth + 10));
-                        break;
-                }
+                Vector2 position = pickRandomSpawnPosition(100);
                 DemonEye DemonEye;
                 if (Game1.currentSeason == "fall" && config.DemonEyeSpawning.SpawnHalloweenVariants == "During Fall")
                     DemonEye = new DemonEye(position, fallDemonEyeVariants[Game1.random.Next(fallDemonEyeVariants.Length)]);
@@ -218,7 +244,7 @@ namespace TerrariaBosses
             if (EoC != null)
             {
                 Texture2D icon;
-                if (EoC.Health > EoC.MaxHealth * 0.5)
+                if (EoC.Health / EoC.MaxHealth > 0.5)
                     icon = Game1.content.Load<Texture2D>("Mods/GlitchedDeveloper.TerrariaBosses/UI/NPC_Head_Boss_0");
                 else
                     icon = Game1.content.Load<Texture2D>("Mods/GlitchedDeveloper.TerrariaBosses/UI/NPC_Head_Boss_1");
@@ -228,12 +254,12 @@ namespace TerrariaBosses
         private void OnSaving(object? sender, SavingEventArgs e)
         {
             Monitor.Log("Trying to remove npcs");
-            foreach(GameLocation location in  Game1.locations)
+            foreach (GameLocation location in Game1.locations)
             {
                 List<NPC> npcsToRemove = new List<NPC>();
                 foreach (NPC npc in location.characters)
                 {
-                    if (npc is EyeOfCthulhu || npc is DemonEye)
+                    if (npc is EyeOfCthulhu || npc is DemonEye || npc is Slime)
                     {
                         Monitor.Log("Removing NPC");
                         npcsToRemove.Add(npc);
@@ -242,6 +268,41 @@ namespace TerrariaBosses
                 foreach (NPC npc in npcsToRemove)
                 {
                     location.characters.Remove(npc);
+                }
+            }
+        }
+        private void OnInventoryChanged(object? sender, InventoryChangedEventArgs e)
+        {
+            foreach(Item item in e.Added)
+            {
+                if (item.ItemId == "GlitchedDeveloper.TerrariaBosses_CopperCoin")
+                {
+                    Game1.player.Money += item.Stack;
+                    Game1.player.removeItemFromInventory(item);
+                    Game1.playSound($"GlitchedDeveloper.TerrariaBosses_Coin {Game1.random.Next(5)}");
+                }
+                else if (item.ItemId == "GlitchedDeveloper.TerrariaBosses_SilverCoin")
+                {
+                    Game1.player.Money += item.Stack * 100;
+                    Game1.player.removeItemFromInventory(item);
+                    Game1.playSound($"GlitchedDeveloper.TerrariaBosses_Coin {Game1.random.Next(5)}");
+                }
+                else if (item.ItemId == "GlitchedDeveloper.TerrariaBosses_GoldCoin")
+                {
+                    Game1.player.Money += item.Stack * 10000;
+                    Game1.player.removeItemFromInventory(item);
+                    Game1.playSound($"GlitchedDeveloper.TerrariaBosses_Coin {Game1.random.Next(5)}");
+                }
+                else if (item.ItemId == "GlitchedDeveloper.TerrariaBosses_PlatinumCoin")
+                {
+                    Game1.player.Money += item.Stack * 1000000;
+                    Game1.player.removeItemFromInventory(item);
+                    Game1.playSound($"GlitchedDeveloper.TerrariaBosses_Coin {Game1.random.Next(5)}");
+                }
+                else if (item.ItemId == "GlitchedDeveloper.TerrariaBosses_Heart")
+                {
+                    Game1.player.health += item.Stack * 20;
+                    Game1.player.removeItemFromInventory(item);
                 }
             }
         }
@@ -279,7 +340,19 @@ namespace TerrariaBosses
             configMenu.AddSectionTitle(
                 mod: this.ModManifest,
                 text: () => "General Settings"
-             );
+            );
+            configMenu.AddTextOption(
+                mod: this.ModManifest,
+                name: () => "Difficulty",
+                tooltip: () => "Changes enemy difficulty",
+                getValue: () => config.Difficulty,
+                setValue: value => {
+                    config.Difficulty = value;
+                    expertMode = value != "Classic";
+                    getGoodWorld = value == "Legendary";
+                },
+                allowedValues: new string[] { "Classic", "Expert", "Master", "Legendary" }
+            );
             configMenu.AddBoolOption(
                 mod: this.ModManifest,
                 name: () => "Spawn Gore",

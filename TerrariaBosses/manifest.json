@@ -1,8 +1,8 @@
 ﻿{
   "Name": "Terraria Bosses",
   "Author": "GlitchedDeveloper",
-  "Version": "1.0.3",
-  "Description": "Adds the Eye of Cthulhu from Terraria.",
+  "Version": "1.0.4",
+  "Description": "Adds Bosses from Terraria.",
   "UniqueID": "GlitchedDeveloper.TerrariaBosses",
   "EntryDll": "TerrariaBosses.dll",
   "MinimumApiVersion": "4.0.0",
