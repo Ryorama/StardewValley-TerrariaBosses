@@ -1,7 +1,7 @@
 {
   "Name": "[CP] Terraria Bosses",
   "Author": "GlitchedDeveloper",
-  "Version": "1.0.4",
+  "Version": "1.0.5",
   "Description": "Adds Bosses from Terraria.",
   "UniqueID": "GlitchedDeveloper.CP.TerrariaBosses",
   "ContentPackFor": { "UniqueID": "Pathoschild.ContentPatcher" },

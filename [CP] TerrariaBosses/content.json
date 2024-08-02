@@ -208,10 +208,12 @@
                             "RequiredCount": 5
                         }
                     ],
-                    "OutputItem": {
-                        "Id": "(O)GlitchedDeveloper.TerrariaBosses_CrimtaneOre",
-                        "ItemId": "(O)GlitchedDeveloper.TerrariaBosses_CrimtaneOre"
-                    },
+                    "OutputItem": [
+                        {
+                            "Id": "(O)GlitchedDeveloper.TerrariaBosses_CrimtaneBar",
+                            "ItemId": "(O)GlitchedDeveloper.TerrariaBosses_CrimtaneBar"
+                        }
+                    ],
                     "MinutesUntilReady": 30
                 },
                 "GlitchedDeveloper.TerrariaBosses_DemoniteOre": {
@@ -223,10 +225,60 @@
                             "RequiredCount": 5
                         }
                     ],
-                    "OutputItem": {
-                        "Id": "(O)GlitchedDeveloper.TerrariaBosses_DemoniteOre",
-                        "ItemId": "(O)GlitchedDeveloper.TerrariaBosses_DemoniteOre"
-                    },
+                    "OutputItem": [
+                        {
+                            "Id": "(O)GlitchedDeveloper.TerrariaBosses_DemoniteBar",
+                            "ItemId": "(O)GlitchedDeveloper.TerrariaBosses_DemoniteBar"
+                        }
+                    ],
+                    "MinutesUntilReady": 30
+                }
+            }
+        },
+        {
+            "Action": "EditData",
+            "Target": "Data/Machines",
+            "TargetField": [
+                "(BC)HeavyFurnace",
+                "OutputRules"
+            ],
+            "Entries": {
+                "GlitchedDeveloper.TerrariaBosses_CrimtaneOre": {
+                    "Id": "GlitchedDeveloper.TerrariaBosses_CrimtaneOre",
+                    "Triggers": [
+                        {
+                            "Id": "ItemPlacedInMachine",
+                            "RequiredItemId": "(O)GlitchedDeveloper.TerrariaBosses_CrimtaneOre",
+                            "RequiredCount": 25
+                        }
+                    ],
+                    "OutputItem": [
+                        {
+                            "Id": "(O)GlitchedDeveloper.TerrariaBosses_CrimtaneBar",
+                            "ItemId": "(O)GlitchedDeveloper.TerrariaBosses_CrimtaneBar",
+                            "MinStack": 5,
+                            "MaxStack": 6
+                        }
+                    ],
+                    "MinutesUntilReady": 30
+                },
+                "GlitchedDeveloper.TerrariaBosses_DemoniteOre": {
+                    "Id": "GlitchedDeveloper.TerrariaBosses_DemoniteOre",
+                    "Triggers": [
+                        {
+                            "Id": "ItemPlacedInMachine",
+                            "RequiredItemId": "(O)GlitchedDeveloper.TerrariaBosses_DemoniteOre",
+                            "RequiredCount": 25
+                        }
+                    ],
+                    "OutputItem": [
+                        {
+                            "Id": "(O)GlitchedDeveloper.TerrariaBosses_DemoniteBar",
+                            "ItemId": "(O)GlitchedDeveloper.TerrariaBosses_DemoniteBar",
+                            "MinStack": 5,
+                            "MaxStack": 6
+                        }
+                    ],
                     "MinutesUntilReady": 30
                 }
             }
