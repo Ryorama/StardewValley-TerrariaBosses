@@ -4,6 +4,7 @@ namespace TerrariaBosses
 {
     public class Config
     {
+        public string Difficulty { get; set; } = "Classic";
         public bool SpawnGore { get; set; } = true;
         public DemonEyeSpawningConfig DemonEyeSpawning { get; set; } = new DemonEyeSpawningConfig();
         public EyeOfCthulhuConfig EyeOfCthulhu { get; set; } = new EyeOfCthulhuConfig();
