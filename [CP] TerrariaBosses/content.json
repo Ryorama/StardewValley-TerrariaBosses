@@ -384,6 +384,7 @@
                     "Description": "{{i18n: Object.CopperCoin.Description}}",
                     "Type": "Basic",
                     "Price": 1,
+					"ExcludeFromShippingCollection": true,
                     "Texture": "Mods/GlitchedDeveloper.TerrariaBosses/Items/Objects",
                     "SpriteIndex": 6,
                     "ContextTags": [
@@ -396,6 +397,7 @@
                     "Description": "{{i18n: Object.SilverCoin.Description}}",
                     "Type": "Basic",
                     "Price": 100,
+					"ExcludeFromShippingCollection": true,
                     "Texture": "Mods/GlitchedDeveloper.TerrariaBosses/Items/Objects",
                     "SpriteIndex": 7,
                     "ContextTags": [
@@ -408,6 +410,7 @@
                     "Description": "{{i18n: Object.GoldCoin.Description}}",
                     "Type": "Basic",
                     "Price": 10000,
+					"ExcludeFromShippingCollection": true,
                     "Texture": "Mods/GlitchedDeveloper.TerrariaBosses/Items/Objects",
                     "SpriteIndex": 8,
                     "ContextTags": [
@@ -420,6 +423,7 @@
                     "Description": "{{i18n: Object.PlatinumCoin.Description}}",
                     "Type": "Basic",
                     "Price": 1000000,
+					"ExcludeFromShippingCollection": true,
                     "Texture": "Mods/GlitchedDeveloper.TerrariaBosses/Items/Objects",
                     "SpriteIndex": 9,
                     "ContextTags": [

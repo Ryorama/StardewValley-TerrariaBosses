@@ -21,16 +21,16 @@ public class EyeOfCthulhu : Monster
 
     public NetInt segmentCount = new NetInt(0);
 
-    public NetFloat lifeForSecondPhase;
-    public int LifeForSecondPhase
+    public NetFloat lifeForSecondPhase = new NetFloat(0);
+    public float LifeForSecondPhase
     {
         get
         {
-            return health.Value;
+            return lifeForSecondPhase.Value;
         }
         set
         {
-            health.Value = value;
+            lifeForSecondPhase.Value = value;
         }
     }
     int width = 55;
@@ -507,12 +507,12 @@ public class EyeOfCthulhu : Monster
                     }
                 }
             }
-            lifeForSecondPhase = 0.5f;
+            lifeForSecondPhase.Value = 0.5f;
             if (ModEntry.expertMode)
             {
-                lifeForSecondPhase = 0.65f;
+                lifeForSecondPhase.Value = 0.65f;
             }
-            if (base.Health < base.MaxHealth * lifeForSecondPhase)
+            if (base.Health < base.MaxHealth * lifeForSecondPhase.Value)
             {
                 currentPhase = 1f;
                 currentAttackMode = 0f;
