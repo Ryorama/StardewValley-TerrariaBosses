@@ -14,13 +14,9 @@ using System.Runtime.InteropServices;
 
 namespace TerrariaBosses.NPCs;
 
-public class DemonEye : Monster
+public class DemonEye :  ITerrariaEntity
 {
     public const float rotationIncrement = MathF.PI / 64f;
-
-    private int wasHitCounter;
-
-    private readonly NetFarmerRef killer = new NetFarmerRef().Delayed(interpolationWait: false);
 
     public List<Vector3> segments = new List<Vector3>();
 
@@ -34,9 +30,6 @@ public class DemonEye : Monster
 
     public int spriteFrameCount;
 
-    public string hitSoundID;
-
-    public string killSoundID;
 
     private Dictionary<string, string[]> goreIDs = new Dictionary<string, string[]>()
     {
@@ -55,14 +48,17 @@ public class DemonEye : Monster
     {
     }
 
-    public DemonEye(Vector2 position)
-        : base("DemonEye", position)
+    public DemonEye(string name) : base(name)
     {
         InitializeAttributes();
     }
 
-    public DemonEye(Vector2 position, string name)
-        : base(name, position)
+    public DemonEye(Vector2 position) : base("Demon Eye", position)
+    {
+        InitializeAttributes();
+    }
+
+    public DemonEye(Vector2 position, string name) : base(name, position)
     {
         InitializeAttributes();
     }
@@ -83,6 +79,21 @@ public class DemonEye : Monster
         killSoundID = "Killed 1";
         reloadSprite();
         damageToFarmer.Value = GetAttackDamage_ScaledByStrength(base.damageToFarmer);
+        switch (ModEntry.config.Difficulty)
+        {
+            case "Expert":
+                maxHealth.Value = 36;
+                health.Value = maxHealth.Value;
+                break;
+            case "Master":
+                maxHealth.Value = 54;
+                health.Value = maxHealth.Value;
+                break;
+            case "Legendary":
+                maxHealth.Value = 74;
+                health.Value = maxHealth.Value;
+                break;
+        }
     }
     public int GetAttackDamage_ScaledByStrength(float normalDamage)
     {
@@ -109,22 +120,6 @@ public class DemonEye : Monster
         Sprite.SpriteHeight = eyeHeight;
         Sprite.SourceRect = new Rectangle(0, 0, eyeWidth, eyeHeight);
         base.HideShadow = true;
-    }
-
-    public override int takeDamage(int damage, int xTrajectory, int yTrajectory, bool isBomb, double addedPrecision, Farmer who)
-    {
-        int num = (int)(damage - (resilience * 0.5));
-        base.Health -= num;
-        velocity.X = xTrajectory / 3;
-        velocity.Y = yTrajectory / 3;
-        wasHitCounter = 500;
-        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_{hitSoundID}");
-        if (base.Health <= 0)
-        {
-            killer.Value = who;
-            deathAnimation();
-        }
-        return num;
     }
 
     protected override void sharedDeathAnimation()
@@ -210,7 +205,6 @@ public class DemonEye : Monster
         Sprite.Animate(time, 0, spriteFrameCount, 200f);
     }
 
-    public Vector2 velocity;
     public override void behaviorAtGameTick(GameTime time)
     {
         Farmer target = Player;

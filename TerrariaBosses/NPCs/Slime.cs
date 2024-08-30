@@ -9,13 +9,9 @@ using StardewValley.Network;
 
 namespace TerrariaBosses.NPCs;
 
-public class Slime : Monster
+public class Slime : ITerrariaEntity
 {
     public const float rotationIncrement = MathF.PI / 64f;
-
-    private int wasHitCounter;
-
-    private readonly NetFarmerRef killer = new NetFarmerRef().Delayed(interpolationWait: false);
 
     public string spritePath;
 
@@ -31,30 +27,34 @@ public class Slime : Monster
 
     public int spriteHeight;
 
+    public Color slimeColor = new Color(0, 0, 0);
+
     public Slime()
     {
         InitializeAttributes();
     }
 
-    public Slime(Vector2 position)
-        : base("Slime", position)
+    public Slime(string name) : base(name)
     {
         InitializeAttributes();
     }
 
-    public Slime(Vector2 position, string name)
-        : base(name, position)
+    public Slime(Vector2 position) : base("Slime", position)
+    {
+        InitializeAttributes();
+    }
+
+    public Slime(Vector2 position, string name) : base(name, position)
     {
         InitializeAttributes();
     }
 
     public virtual void InitializeAttributes()
     {
-        base.Slipperiness = 24 + Game1.random.Next(10);
+        Slipperiness = 24 + Game1.random.Next(10);
         Halt();
-        base.IsWalkingTowardPlayer = false;
-        base.HideShadow = true;
-        base.Scale = 1f;
+        IsWalkingTowardPlayer = false;
+        HideShadow = true;
         spriteFrameCount = 2;
         spritePath = $"Mods/GlitchedDeveloper.TerrariaBosses/Monsters/Slime";
         texture = Game1.content.Load<Texture2D>(spritePath);
@@ -64,7 +64,30 @@ public class Slime : Monster
         frame.Height = spriteHeight;
         hitSoundID = "Hit 1";
         killSoundID = "Killed 1";
-        damageToFarmer.Value = GetAttackDamage_ScaledByStrength(base.damageToFarmer);
+        switch (name.Value)
+        {
+            case "Slime":
+                base.maxHealth.Value = 14;
+                damageToFarmer.Value = GetAttackDamage_ScaledByStrength(damageToFarmer);
+                base.resilience.Value = 0;
+                Scale = 1f;
+                break;
+            case "Green Slime":
+                base.maxHealth.Value = 14;
+                damageToFarmer.Value = GetAttackDamage_ScaledByStrength(6);
+                base.resilience.Value = 0;
+                Scale = 1f;
+                slimeColor = new Color(80, 255, 100);
+                break;
+            case "Blue Slime":
+                base.maxHealth.Value = 25;
+                damageToFarmer.Value = GetAttackDamage_ScaledByStrength(7);
+                base.resilience.Value = 2;
+                Scale = 1.5f;
+                slimeColor = new Color(80, 197, 255);
+                break;
+        }
+        reloadSprite();
     }
     public int GetAttackDamage_ScaledByStrength(float normalDamage)
     {
@@ -86,22 +109,11 @@ public class Slime : Monster
 
     public override void reloadSprite(bool onlyAppearance = false)
     {
-    }
-
-    public override int takeDamage(int damage, int xTrajectory, int yTrajectory, bool isBomb, double addedPrecision, Farmer who)
-    {
-        int num = (int)(damage - (resilience * 0.5));
-        base.Health -= num;
-        velocity.X = xTrajectory / 3;
-        velocity.Y = yTrajectory / 3;
-        wasHitCounter = 500;
-        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_{hitSoundID}");
-        if (base.Health <= 0)
-        {
-            killer.Value = who;
-            deathAnimation();
-        }
-        return num;
+        Sprite = new AnimatedSprite(spritePath);
+        Sprite.SpriteWidth = spriteWidth;
+        Sprite.SpriteHeight = spriteHeight;
+        Sprite.SourceRect = new Rectangle(0, 0, spriteWidth, spriteHeight);
+        base.HideShadow = true;
     }
 
     protected override void sharedDeathAnimation()
@@ -122,7 +134,7 @@ public class Slime : Monster
         //        base.currentLocation.debris.Add(new Gore($"Mods/GlitchedDeveloper.TerrariaBosses/Gore/{id}", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
         //    }
         //}
-        base.currentLocation.localSound($"GlitchedDeveloper.TerrariaBosses_{killSoundID}");
+        currentLocation.localSound($"GlitchedDeveloper.TerrariaBosses_{killSoundID}");
     }
     public override List<Item> getExtraDropItems()
     {
@@ -136,21 +148,26 @@ public class Slime : Monster
 
     public override void draw(SpriteBatch b)
     {
-        int y = base.StandingPixel.Y;
-        Vector2 vector2 = base.Position;
+        if (Sprite.SpriteWidth != spriteWidth || Sprite.SpriteHeight != spriteHeight)
+        {
+            reloadSprite();
+            Sprite.UpdateSourceRect();
+        }
+        int y = StandingPixel.Y;
+        Vector2 vector2 = Position;
 
         if (Utility.isOnScreen(vector2, 128))
         {
             flip = dirX < 0;
-            Vector2 vector4 = Game1.GlobalToLocal(Game1.viewport, vector2 + new Vector2(0f, -jumpPos)) + drawOffset;
+            Vector2 vector4 = Game1.GlobalToLocal(Game1.viewport, vector2) + drawOffset + new Vector2(0f, yJumpOffset);
             int height = GetBoundingBox().Height;
-            b.Draw(texture, vector4 + new Vector2(64f, height / 2), frame, new Color(0, 80, 255, 100), 0f, new Vector2(spriteWidth / 2, spriteHeight / 2), Math.Max(0.2f, scale.Value) * 4f, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, (float)y / 10000f);
+            b.Draw(texture, vector4 + new Vector2(64f, height / 2), Sprite.sourceRect, slimeColor, 0f, new Vector2(spriteWidth / 2, spriteHeight / 2), Math.Max(0.2f, scale.Value) * 4f, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f)));
         }
     }
 
     public override Rectangle GetBoundingBox()
     {
-        Vector2 vector = base.Position;
+        Vector2 vector = Position;
         return new Rectangle((int)vector.X + 39, (int)(vector.Y - jumpPos) + 3, 50, 35);
     }
 
@@ -166,7 +183,7 @@ public class Slime : Monster
         int num2 = 0;
         if (aiAction == 0)
         {
-            num2 = ((jumpVelocity < 0f) ? 2 : ((jumpVelocity > 0f) ? 3 : ((velocity.X != 0f || velocity.Y != 0f) ? 1 : 0)));
+            num2 = jumpVelocity < 0f ? 2 : jumpVelocity > 0f ? 3 : velocity.X != 0f || velocity.Y != 0f ? 1 : 0;
         }
         else if (aiAction == 1)
         {
@@ -195,14 +212,13 @@ public class Slime : Monster
     public void TargetClosest()
     {
         target = Game1.player;
-        float distX = position.X + (float)(spriteWidth / 2) - target.position.X;
-        float distY = position.Y + (float)(spriteHeight / 2) - target.position.Y;
+        float distX = position.X + spriteWidth / 2 - target.position.X;
+        float distY = position.Y + spriteHeight / 2 - target.position.Y;
         float dir = (float)Math.Atan2(distY, distX) + 4.71f;
         dirX = (float)Math.Sin(dir);
         dirY = -(float)Math.Cos(dir);
     }
 
-    public Vector2 velocity;
     public float currentAttack = 0f;
     public float ticks = 0f;
     public int aiAction = 0;
@@ -257,17 +273,17 @@ public class Slime : Monster
             previousY = 0f;
             if (jumpPos == 0f && oldJumpVelocity != 0f && jumpVelocity == 0f)
             {
-                position.X -= velocity.X + (float)dirX;
-                position.Y -= velocity.Y + (float)dirY;
+                position.X -= velocity.X + dirX;
+                position.Y -= velocity.Y + dirY;
                 oldJumpVelocity = jumpVelocity;
             }
             velocity.X *= 0.8f;
-            if ((double)velocity.X > -0.1 && (double)velocity.X < 0.1)
+            if (velocity.X > -0.1 && velocity.X < 0.1)
             {
                 velocity.X = 0f;
             }
             velocity.Y *= 0.8f;
-            if ((double)velocity.Y > -0.1 && (double)velocity.Y < 0.1)
+            if (velocity.Y > -0.1 && velocity.Y < 0.1)
             {
                 velocity.Y = 0f;
             }
@@ -330,26 +346,26 @@ public class Slime : Monster
         {
             if (jumpPos == 0f && oldJumpVelocity != 0f && jumpVelocity == 0f)
             {
-                position.X -= velocity.X + (float)dirX;
-                position.Y -= velocity.Y + (float)dirY;
+                position.X -= velocity.X + dirX;
+                position.Y -= velocity.Y + dirY;
                 oldJumpVelocity = jumpVelocity;
             }
-            if (target != null && ((dirX > 0 && velocity.X < 3f) || (dirX < 0 && velocity.X > -3f)))
+            if (target != null && (dirX > 0 && velocity.X < 3f || dirX < 0 && velocity.X > -3f))
             {
-                if ((dirX < 0 && (double)velocity.X < 0.01) || (dirX > 0 && (double)velocity.X > -0.01))
+                if (dirX < 0 && velocity.X < 0.01 || dirX > 0 && velocity.X > -0.01)
                 {
-                    velocity.X += 0.2f * (float)dirX;
+                    velocity.X += 0.2f * dirX;
                 }
                 else
                 {
                     velocity.X *= 0.93f;
                 }
             }
-            if (target != null && ((dirY > 0 && velocity.Y < 3f) || (dirY < 0 && velocity.Y > -3f)))
+            if (target != null && (dirY > 0 && velocity.Y < 3f || dirY < 0 && velocity.Y > -3f))
             {
-                if ((dirY < 0 && (double)velocity.Y < 0.01) || (dirY > 0 && (double)velocity.Y > -0.01))
+                if (dirY < 0 && velocity.Y < 0.01 || dirY > 0 && velocity.Y > -0.01)
                 {
-                    velocity.Y += 0.2f * (float)dirY;
+                    velocity.Y += 0.2f * dirY;
                 }
                 else
                 {

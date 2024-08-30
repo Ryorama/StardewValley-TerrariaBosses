@@ -2,20 +2,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Netcode;
 using StardewValley;
-using StardewValley.BellsAndWhistles;
-using StardewValley.Monsters;
 using StardewValley.Network;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TerrariaBosses.NPCs;
 
-public class EyeOfCthulhu : Monster
+public class EyeOfCthulhu : ITerrariaBossEntity
 {
     public const float rotationIncrement = MathF.PI / 64f;
-
-    private int wasHitCounter;
-
-    private readonly NetFarmerRef killer = new NetFarmerRef().Delayed(interpolationWait: false);
 
     public List<Vector3> segments = new List<Vector3>();
 
@@ -43,14 +36,12 @@ public class EyeOfCthulhu : Monster
     {
     }
 
-    public EyeOfCthulhu(Vector2 position)
-        : base("Eye of Cthulhu", position)
+    public EyeOfCthulhu(Vector2 position) : base("Eye of Cthulhu", position)
     {
         InitializeAttributes();
     }
 
-    public EyeOfCthulhu(Vector2 position, string name)
-        : base(name, position)
+    public EyeOfCthulhu(Vector2 position, string name) : base(name, position)
     {
         InitializeAttributes();
     }
@@ -58,9 +49,27 @@ public class EyeOfCthulhu : Monster
     public virtual void InitializeAttributes()
     {
         Halt();
+        hitSoundID = "Hit 1";
+        killSoundID = "Killed 1";
+        bossTrack = "GlitchedDeveloper.TerrariaBosses_Boss 1";
         base.IsWalkingTowardPlayer = false;
         velocity = new(0, 0);
         forceOneTileWide.Value = false;
+        switch (ModEntry.config.Difficulty)
+        {
+            case "Expert":
+                maxHealth.Value = 3640;
+                health.Value = maxHealth.Value;
+                break;
+            case "Master":
+                maxHealth.Value = 4641;
+                health.Value = maxHealth.Value;
+                break;
+            case "Legendary":
+                maxHealth.Value = 5651;
+                health.Value = maxHealth.Value;
+                break;
+        }
         reloadSprite();
     }
 
@@ -71,20 +80,6 @@ public class EyeOfCthulhu : Monster
         Sprite.SpriteHeight = 83;
         Sprite.SourceRect = new Rectangle(0, 0, 55, 83);
         base.HideShadow = true;
-    }
-
-    public override int takeDamage(int damage, int xTrajectory, int yTrajectory, bool isBomb, double addedPrecision, Farmer who)
-    {
-        int num = (int)(damage - (resilience * 0.5));
-        base.Health -= num;
-        wasHitCounter = 500;
-        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Hit 1");
-        if (base.Health <= 0)
-        {
-            killer.Value = who;
-            deathAnimation();
-        }
-        return num;
     }
 
     protected override void sharedDeathAnimation()
@@ -121,6 +116,33 @@ public class EyeOfCthulhu : Monster
             list.Add(ItemRegistry.Create("GlitchedDeveloper.TerrariaBosses_EyeOfCthulhuTrophy"));
         }
         return list;
+    }
+
+    public override int takeDamage(int damage, int xTrajectory, int yTrajectory, bool isBomb, double addedPrecision, Farmer who)
+    {
+        float defenseMultiplier = 0.5f;
+        switch (ModEntry.config.Difficulty)
+        {
+            case "Expert":
+                defenseMultiplier = 0.75f;
+                break;
+            case "Master":
+                defenseMultiplier = 1f;
+                break;
+            case "Legendary":
+                defenseMultiplier = 1.5f;
+                break;
+        }
+        int num = (int)(damage - (resilience * defenseMultiplier));
+        base.Health -= num;
+        wasHitCounter = 500;
+        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_{hitSoundID}");
+        if (base.Health <= 0)
+        {
+            killer.Value = who;
+            deathAnimation();
+        }
+        return num;
     }
 
     public override void drawAboveAllLayers(SpriteBatch b)
@@ -192,7 +214,6 @@ public class EyeOfCthulhu : Monster
     private float currentAttackMode;
     private float attackModeTicks;
     private float attackPartTicks;
-    private Vector2 velocity;
 
     public override void behaviorAtGameTick(GameTime time)
     {
