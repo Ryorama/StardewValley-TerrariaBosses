@@ -313,6 +313,7 @@
                     "Type": "Basic",
                     "Category": -20,
                     "Price": 100,
+					"ExcludeFromShippingCollection": false,
                     "Texture": "Mods/GlitchedDeveloper.TerrariaBosses/Items/Objects",
                     "SpriteIndex": 0
                 },
@@ -451,6 +452,7 @@
                     "Type": "Basic",
                     "Category": -20,
                     "Price": 1,
+					"ExcludeFromShippingCollection": false,
                     "Texture": "Mods/GlitchedDeveloper.TerrariaBosses/Items/Objects",
                     "SpriteIndex": 11
                 }

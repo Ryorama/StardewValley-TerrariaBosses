@@ -8,6 +8,7 @@ using StardewValley;
 using GenericModConfigMenu;
 using StardewValley.Locations;
 using StardewValley.Tools;
+using TerrariaBosses.NPCs.Bosses;
 
 namespace TerrariaBosses
 {
@@ -18,6 +19,26 @@ namespace TerrariaBosses
         public static bool expertMode;
         public static bool getGoodWorld;
         public EntityData entityData = new EntityData();
+        private string[] demonEyeVariants =
+        {
+            "Demon Eye",
+            "Cataract Eye",
+            "Sleepy Eye",
+            "Dilated Eye",
+            "Green Eye",
+            "Purple Eye"
+        };
+        private string[] fallDemonEyeVariants =
+        {
+            "Demon Eye",
+            "Cataract Eye",
+            "Sleepy Eye",
+            "Dilated Eye",
+            "Green Eye",
+            "Purple Eye",
+            "Owl Demon Eye",
+            "Spaceship Demon Eye"
+        };
 
         public override void Entry(IModHelper helper)
         {
@@ -99,7 +120,7 @@ namespace TerrariaBosses
                     Game1.playSound("GlitchedDeveloper.TerrariaBosses_Roar 0");
                 }
             }
-            /*
+            
             if (e.Button == SButton.OemTilde)
             {
                 Game1.currentLocation.addCharacter(new Slime(Game1.player.Position, "Green Slime"));
@@ -108,7 +129,7 @@ namespace TerrariaBosses
             {
                 Game1.currentLocation.addCharacter(new Slime(Game1.player.Position, "Blue Slime"));
             }
-            */
+            
         }
         public EyeOfCthulhu? GetEoC()
         {
@@ -128,7 +149,7 @@ namespace TerrariaBosses
                 return true;
             if (location.IsOutdoors && config.AnywhereOutdoors)
                 return true;
-            if (location.IsFarm && config.Farm)
+            if (location.IsFarm && config.Farm && location.IsOutdoors)
                 return true;
             if (Game1.CurrentMineLevel > 0 && Game1.CurrentMineLevel <= 120 && config.Mines)
                 return true;
@@ -185,73 +206,35 @@ namespace TerrariaBosses
         {
             if (!Context.IsWorldReady)
                 return;
-
-            entityData.setupLists();
             GameLocation location = Game1.player.currentLocation;
-            List<NPC> bossNpcs = new List<NPC>();
-            foreach (NPC npc in location.characters)
-            {
-                if (npc is ITerrariaBossEntity)
-                {
-                    bossNpcs.Add(npc);
-                }
-            }
-            if (bossNpcs.Count > 1) {
-                for (int i = 2; i >= bossNpcs.Count; i++)
-                {
-                    bossNpcs.Remove(bossNpcs[i]);
-                }
-            }
-
+            EyeOfCthulhu EoC = GetEoC();
             if (
                 CanSpawnAt(location, config.DemonEyeSpawning.SpawnLocation) &&
+                (Game1.timeOfDay >= config.DemonEyeSpawning.SpawnAfter) &&
                 (Game1.player.mailReceived.Contains("hasActivatedForestPylon") || !config.DemonEyeSpawning.OnlyAfterTerrariaEasterEgg) &&
                 Game1.player.CanMove && Game1.activeClickableMenu == null &&
-                (bossNpcs.Count <= 0 || !config.DemonEyeSpawning.BlockWhenEOCAlive) &&
+                (EoC == null || !config.DemonEyeSpawning.BlockWhenEOCAlive) &&
                 Game1.random.NextDouble() < (double)config.DemonEyeSpawning.SpawnChance / 100)
             {
-                if (Game1.timeOfDay >= config.DemonEyeSpawning.SpawnAfter)
-                {
-                    Monitor.Log("Spawn Night Entity");
-                    Vector2 position = pickRandomSpawnPosition(100);
-                    if (Game1.currentSeason == "fall" && config.DemonEyeSpawning.SpawnHalloweenVariants == "During Fall")
-                    {
-                        location.addCharacter(entityData.fallNightSpawnList[Game1.random.Next(entityData.fallNightSpawnList.Count)]);
-                    }
-                    else if (Game1.currentSeason == "fall" && Game1.dayOfMonth == 27 && config.DemonEyeSpawning.SpawnHalloweenVariants == "During Spirit's Eve")
-                    {
-                        NPC entity = entityData.fallNightSpawnList[Game1.random.Next(entityData.fallNightSpawnList.Count)];
-                        entity.position.Value = position;
-                        location.addCharacter(entity);
-                    }
-                    else
-                    {
-                        NPC entity = entityData.nightSpawnList[Game1.random.Next(entityData.nightSpawnList.Count)];
-                        entity.position.Value = position;
-                        location.addCharacter(entity);
-                    }
-                }
+                Monitor.Log("Spawn Demon Eye");
+                Vector2 position = pickRandomSpawnPosition(100);
+                DemonEye DemonEye;
+                if (Game1.currentSeason == "fall" && config.DemonEyeSpawning.SpawnHalloweenVariants == "During Fall")
+                    DemonEye = new DemonEye(position, fallDemonEyeVariants[Game1.random.Next(fallDemonEyeVariants.Length)]);
+                else if (Game1.currentSeason == "fall" && Game1.dayOfMonth == 27 && config.DemonEyeSpawning.SpawnHalloweenVariants == "During Spirit's Eve")
+                    DemonEye = new DemonEye(position, fallDemonEyeVariants[Game1.random.Next(fallDemonEyeVariants.Length)]);
                 else
-                {
-                    Monitor.Log("Spawn Day Entity");
-                    Vector2 position = pickRandomSpawnPosition(100);
-                    if (Game1.currentSeason == "fall" && config.DemonEyeSpawning.SpawnHalloweenVariants == "During Fall")
-                        location.addCharacter(entityData.fallDaySpawnList[Game1.random.Next(entityData.fallDaySpawnList.Count)]);
-                    else if (Game1.currentSeason == "fall" && Game1.dayOfMonth == 27 && config.DemonEyeSpawning.SpawnHalloweenVariants == "During Spirit's Eve")
-                        location.addCharacter(entityData.fallDaySpawnList[Game1.random.Next(entityData.fallDaySpawnList.Count)]);
-                    else
-                        location.addCharacter(entityData.daySpawnList[Game1.random.Next(entityData.daySpawnList.Count)]);
-                }
+                    DemonEye = new DemonEye(position, demonEyeVariants[Game1.random.Next(demonEyeVariants.Length)]);
+                location.addCharacter(DemonEye);
             }
-                
             if (Game1.currentSong != null)
             {
-                if (bossNpcs.Count > 0 && Game1.currentSong.Name != ((ITerrariaBossEntity)bossNpcs[0]).bossTrack && Game1.requestedMusicTrack != ((ITerrariaBossEntity)bossNpcs[0]).bossTrack)
+                if (EoC != null && Game1.currentSong.Name != "GlitchedDeveloper.TerrariaBosses_Boss 1" && Game1.requestedMusicTrack != "GlitchedDeveloper.TerrariaBosses_Boss 1")
                 {
                     previousSong = Game1.currentSong.Name;
-                    Game1.changeMusicTrack(((ITerrariaBossEntity)bossNpcs[0]).bossTrack);
+                    Game1.changeMusicTrack("GlitchedDeveloper.TerrariaBosses_Boss 1");
                 }
-                else if (bossNpcs.Count == 0 && Game1.currentSong.Name.StartsWith("GlitchedDeveloper.TerrariaBosses_Boss") && Game1.requestedMusicTrack.StartsWith("GlitchedDeveloper.TerrariaBosses_Boss"))
+                else if (EoC == null && Game1.currentSong.Name == "GlitchedDeveloper.TerrariaBosses_Boss 1" && Game1.requestedMusicTrack == "GlitchedDeveloper.TerrariaBosses_Boss 1")
                 {
                     Game1.changeMusicTrack(previousSong);
                     previousSong = null;
@@ -259,14 +242,11 @@ namespace TerrariaBosses
             }
             else
             {
-                if (bossNpcs.Count > 0 && Game1.requestedMusicTrack != ((ITerrariaBossEntity)bossNpcs[0]).bossTrack)
+                if (EoC != null && Game1.requestedMusicTrack != "GlitchedDeveloper.TerrariaBosses_Boss 1")
                 {
                     previousSong = "none";
-                    Game1.changeMusicTrack(((ITerrariaBossEntity)bossNpcs[0]).bossTrack);
-               
+                    Game1.changeMusicTrack("GlitchedDeveloper.TerrariaBosses_Boss 1");
                 }
-                entityData.clearLists();
-                bossNpcs.Clear();
             }
         }
         private void OnRenderingHud(object? sender, RenderingHudEventArgs e)

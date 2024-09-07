@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Netcode;
@@ -27,6 +28,7 @@ public class Slime : ITerrariaEntity
 
     public int spriteHeight;
 
+    [XmlElement("slimeColor")]
     public Color slimeColor = new Color(0, 0, 0);
 
     public Slime()

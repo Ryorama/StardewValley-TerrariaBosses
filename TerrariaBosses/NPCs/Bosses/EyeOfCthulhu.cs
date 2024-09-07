@@ -4,7 +4,7 @@ using Netcode;
 using StardewValley;
 using StardewValley.Network;
 
-namespace TerrariaBosses.NPCs;
+namespace TerrariaBosses.NPCs.Bosses;
 
 public class EyeOfCthulhu : ITerrariaBossEntity
 {
@@ -52,7 +52,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
         hitSoundID = "Hit 1";
         killSoundID = "Killed 1";
         bossTrack = "GlitchedDeveloper.TerrariaBosses_Boss 1";
-        base.IsWalkingTowardPlayer = false;
+        IsWalkingTowardPlayer = false;
         velocity = new(0, 0);
         forceOneTileWide.Value = false;
         switch (ModEntry.config.Difficulty)
@@ -76,10 +76,10 @@ public class EyeOfCthulhu : ITerrariaBossEntity
     public override void reloadSprite(bool onlyAppearance = false)
     {
         Sprite = new AnimatedSprite("Mods/GlitchedDeveloper.TerrariaBosses/Monsters/Eye of Cthulhu");
-        Sprite.SpriteWidth = 55;
-        Sprite.SpriteHeight = 83;
-        Sprite.SourceRect = new Rectangle(0, 0, 55, 83);
-        base.HideShadow = true;
+        Sprite.SpriteWidth = width;
+        Sprite.SpriteHeight = height;
+        Sprite.SourceRect = new Rectangle(0, 0, width, height);
+        HideShadow = true;
     }
 
     protected override void sharedDeathAnimation()
@@ -95,12 +95,12 @@ public class EyeOfCthulhu : ITerrariaBossEntity
         Rectangle hitbox = GetBoundingBox();
         if (ModEntry.config.SpawnGore)
         {
-            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/9", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
-            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/9", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
-            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/10", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
-            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/10", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+            currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/9", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+            currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/9", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+            currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/10", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+            currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/10", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
         }
-        base.currentLocation.localSound("GlitchedDeveloper.TerrariaBosses_Killed 1");
+        currentLocation.localSound("GlitchedDeveloper.TerrariaBosses_Killed 1");
     }
 
     public override List<Item> getExtraDropItems()
@@ -133,11 +133,11 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                 defenseMultiplier = 1.5f;
                 break;
         }
-        int num = (int)(damage - (resilience * defenseMultiplier));
-        base.Health -= num;
+        int num = (int)(damage - resilience * defenseMultiplier);
+        Health -= num;
         wasHitCounter = 500;
-        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_{hitSoundID}");
-        if (base.Health <= 0)
+        currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_{hitSoundID}");
+        if (Health <= 0)
         {
             killer.Value = who;
             deathAnimation();
@@ -147,29 +147,29 @@ public class EyeOfCthulhu : ITerrariaBossEntity
 
     public override void drawAboveAllLayers(SpriteBatch b)
     {
-        if (Sprite.SpriteWidth != 55 || Sprite.SpriteHeight != 83)
+        if (Sprite.SpriteWidth != width || Sprite.SpriteHeight != height)
         {
             reloadSprite();
             Sprite.UpdateSourceRect();
         }
-        int y = base.StandingPixel.Y;
-        Vector2 vector2 = base.Position;
+        int y = StandingPixel.Y;
+        Vector2 vector2 = Position;
 
         if (Utility.isOnScreen(vector2, 128))
         {
             Vector2 vector4 = Game1.GlobalToLocal(Game1.viewport, vector2) + drawOffset + new Vector2(0f, yJumpOffset);
             int height = GetBoundingBox().Height;
-            b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), Sprite.SourceRect, Color.White, rotation, new Vector2(55 / 2, 83 / 2), Math.Max(0.2f, scale.Value) * 4f, SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f)));
+            b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), Sprite.SourceRect, Color.White, rotation, new Vector2(width / 2, height / 2), Math.Max(0.2f, scale.Value) * 4f, SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : (y + 8) / 10000f));
             if (isGlowing)
             {
-                b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), Sprite.SourceRect, glowingColor * glowingTransparency, rotation, new Vector2(55 / 2, 83 / 2), Math.Max(0.2f, scale.Value) * 4f, SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : ((float)(y + 8) / 10000f + 0.0001f)));
+                b.Draw(Sprite.Texture, vector4 + new Vector2(64f, height / 2), Sprite.SourceRect, glowingColor * glowingTransparency, rotation, new Vector2(width / 2, height / 2), Math.Max(0.2f, scale.Value) * 4f, SpriteEffects.None, Math.Max(0f, drawOnTop ? 0.991f : (y + 8) / 10000f + 0.0001f));
             }
         }
     }
 
     public override Rectangle GetBoundingBox()
     {
-        Vector2 vector = base.Position;
+        Vector2 vector = Position;
         return new Rectangle((int)vector.X - 55 / 3 - (int)(Math.Cos(rotation + 1.57f) * 50), (int)vector.Y - (int)(Math.Sin(rotation + 1.57f) * 50), 55 * 3, 55 * 3);
     }
 
@@ -189,13 +189,13 @@ public class EyeOfCthulhu : ITerrariaBossEntity
 
     public int GetAttackDamage_LerpBetweenFinalValues(float normalDamage, float expertDamage)
     {
-        float amount = (ModEntry.expertMode ? 1 : 0);
+        float amount = ModEntry.expertMode ? 1 : 0;
         return (int)MathHelper.Lerp(normalDamage, expertDamage, amount);
     }
     public int GetAttackDamage_ScaledByStrength(float normalDamage)
     {
         float damageMultiplier = 1f;
-        switch(ModEntry.config.Difficulty)
+        switch (ModEntry.config.Difficulty)
         {
             case "Expert":
                 damageMultiplier = 2f;
@@ -218,12 +218,12 @@ public class EyeOfCthulhu : ITerrariaBossEntity
     public override void behaviorAtGameTick(GameTime time)
     {
         bool expertUnder12Percent = false;
-        if (ModEntry.expertMode && (double)Health < (double)MaxHealth * 0.12)
+        if (ModEntry.expertMode && Health < MaxHealth * 0.12)
         {
             expertUnder12Percent = true;
         }
         bool expertUnder4Percent = false;
-        if (ModEntry.expertMode && (double)Health < (double)MaxHealth * 0.04)
+        if (ModEntry.expertMode && Health < MaxHealth * 0.04)
         {
             expertUnder4Percent = true;
         }
@@ -233,8 +233,8 @@ public class EyeOfCthulhu : ITerrariaBossEntity
             num4 = 10f;
         }
         Farmer target = Player;
-        float distX = position.X + (float)(width / 2) - target.position.X;
-        float distY = position.Y + (float)(height / 2) - 59f - target.position.Y;
+        float distX = position.X + width / 2 - target.position.X;
+        float distY = position.Y + height / 2 - 59f - target.position.Y;
         if (cutscene)
         {
             if (!ModEntry.config.EyeOfCthulhu.PlayCutscene)
@@ -331,7 +331,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
         {
             rotation += 6.283f;
         }
-        else if ((double)rotation > 6.283)
+        else if (rotation > 6.283)
         {
             rotation -= 6.283f;
         }
@@ -359,7 +359,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
 
                 maxSpeed *= 2;
                 acceleration *= 2;
-                Vector2 vector = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
+                Vector2 vector = new Vector2(position.X + width * 0.5f, position.Y + height * 0.5f);
                 distX = target.position.X - vector.X;
                 distY = target.position.Y - 200f * 2 - vector.Y;
                 float distScale = (float)Math.Sqrt(distX * distX + distY * distY);
@@ -412,7 +412,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                     attackPartTicks = 0f;
                     target = null;
                 }
-                else if (position.Y + (float)height < target.position.Y && targetDistance < 500f * 2)
+                else if (position.Y + height < target.position.Y && targetDistance < 500f * 2)
                 {
                     attackPartTicks += 1f;
                     float ticksToSpawnServant = 110f;
@@ -440,7 +440,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                         distScale = (float)Math.Sqrt(distX * distX + distY * distY);
                         distScale = maxSpeed / distScale;
                         Vector2 servantPos = vector;
-                        Vector2 servantVelocity = default(Vector2);
+                        Vector2 servantVelocity = default;
                         servantVelocity.X = distX * distScale;
                         servantVelocity.Y = distY * distScale;
                         servantPos.X += servantVelocity.X * 10f;
@@ -448,8 +448,8 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                         DemonEye servantNPC = new DemonEye(servantPos, "Servant of Cthulhu");
                         servantNPC.velocity.X = servantVelocity.X;
                         servantNPC.velocity.Y = servantVelocity.Y;
-                        base.currentLocation.addCharacter(servantNPC);
-                        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Hit 1");
+                        currentLocation.addCharacter(servantNPC);
+                        currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Hit 1");
                     }
                 }
             }
@@ -466,7 +466,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                     maxSpeed += 1f;
                 }
                 maxSpeed *= 2;
-                Vector2 eocCenter = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
+                Vector2 eocCenter = new Vector2(position.X + width * 0.5f, position.Y + height * 0.5f);
                 distX = target.position.X - eocCenter.X;
                 distY = target.position.Y - eocCenter.Y;
                 float speedScale = (float)Math.Sqrt(distX * distX + distY * distY);
@@ -489,11 +489,11 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                     {
                         velocity *= 0.99f;
                     }
-                    if ((double)velocity.X > -0.1 && (double)velocity.X < 0.1)
+                    if (velocity.X > -0.1 && velocity.X < 0.1)
                     {
                         velocity.X = 0f;
                     }
-                    if ((double)velocity.Y > -0.1 && (double)velocity.Y < 0.1)
+                    if (velocity.Y > -0.1 && velocity.Y < 0.1)
                     {
                         velocity.Y = 0f;
                     }
@@ -511,7 +511,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                 {
                     ticksInChargeAttack -= 15;
                 }
-                if (attackModeTicks >= (float)ticksInChargeAttack)
+                if (attackModeTicks >= ticksInChargeAttack)
                 {
                     attackPartTicks += 1f;
                     attackModeTicks = 0f;
@@ -533,7 +533,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
             {
                 lifeForSecondPhase.Value = 0.65f;
             }
-            if (base.Health < base.MaxHealth * lifeForSecondPhase.Value)
+            if (Health < MaxHealth * lifeForSecondPhase.Value)
             {
                 currentPhase = 1f;
                 currentAttackMode = 0f;
@@ -548,7 +548,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
             if (currentPhase == 1f || attackPartTicks == 1f)
             {
                 attackModeTicks += 0.005f;
-                if ((double)attackModeTicks > 0.5)
+                if (attackModeTicks > 0.5)
                 {
                     attackModeTicks = 0.5f;
                 }
@@ -572,16 +572,16 @@ public class EyeOfCthulhu : ITerrariaBossEntity
             {
                 howOftenToSpawnServant = 10;
             }
-            if (ModEntry.expertMode && currentAttackMode % (float)howOftenToSpawnServant == 0f)
+            if (ModEntry.expertMode && currentAttackMode % howOftenToSpawnServant == 0f)
             {
                 float maxServantSpeed = 5f * 2;
-                Vector2 eocCenter = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
+                Vector2 eocCenter = new Vector2(position.X + width * 0.5f, position.Y + height * 0.5f);
                 float randomTargetX = Game1.random.Next(-400, 400);
                 float randomTargetY = Game1.random.Next(-400, 400);
                 float servantSpeed = (float)Math.Sqrt(randomTargetX * randomTargetX + randomTargetY * randomTargetY);
                 servantSpeed = maxServantSpeed / servantSpeed;
                 Vector2 servantPos = eocCenter;
-                Vector2 servantVelocity = default(Vector2);
+                Vector2 servantVelocity = default;
                 servantVelocity.X = randomTargetX * servantSpeed;
                 servantVelocity.Y = randomTargetY * servantSpeed;
                 servantPos.X += servantVelocity.X * 10f * 2;
@@ -589,7 +589,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                 DemonEye servantNPC = new DemonEye(servantPos, "Servant of Cthulhu");
                 servantNPC.velocity.X = servantVelocity.X;
                 servantNPC.velocity.Y = servantVelocity.Y;
-                base.currentLocation.addCharacter(servantNPC);
+                currentLocation.addCharacter(servantNPC);
             }
             if (currentAttackMode >= 100f)
             {
@@ -608,24 +608,24 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                     }
                     else
                     {
-                        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Hit 1");
+                        currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Hit 1");
                         Rectangle hitbox = GetBoundingBox();
                         if (ModEntry.config.SpawnGore)
                         {
-                            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/8", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
-                            base.currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/8", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+                            currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/8", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
+                            currentLocation.debris.Add(new Gore("Mods/GlitchedDeveloper.TerrariaBosses/Gore/8", new Vector2(hitbox.X + hitbox.Width / 2, hitbox.Y + hitbox.Height / 2)));
                         }
-                        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Roar 0");
+                        currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Roar 0");
                     }
                 }
             }
             velocity.X *= 0.98f;
             velocity.Y *= 0.98f;
-            if ((double)velocity.X > -0.1 && (double)velocity.X < 0.1)
+            if (velocity.X > -0.1 && velocity.X < 0.1)
             {
                 velocity.X = 0f;
             }
-            if ((double)velocity.Y > -0.1 && (double)velocity.Y < 0.1)
+            if (velocity.Y > -0.1 && velocity.Y < 0.1)
             {
                 velocity.Y = 0f;
             }
@@ -658,7 +658,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
         {
             float maxSpeed = 6f;
             float acceleration = 0.07f;
-            Vector2 eocCenter = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
+            Vector2 eocCenter = new Vector2(position.X + width * 0.5f, position.Y + height * 0.5f);
             distX = target.position.X - eocCenter.X;
             distY = target.position.Y - 120f * 2 - eocCenter.Y;
             float targetDistance = (float)Math.Sqrt(distX * distX + distY * distY);
@@ -740,7 +740,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
         }
         else if (currentAttackMode == 1f)
         {
-            base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Roar 0");
+            currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Roar 0");
             rotation = targetAngle;
             float maxSpeed = 6.8f;
             if (ModEntry.expertMode && attackPartTicks == 1f)
@@ -756,7 +756,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                 maxSpeed *= 1.2f;
             }
             maxSpeed *= 2;
-            Vector2 eocCenter = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
+            Vector2 eocCenter = new Vector2(position.X + width * 0.5f, position.Y + height * 0.5f);
             distX = target.position.X - eocCenter.X;
             distY = target.position.Y - eocCenter.Y;
             float targetDistance = (float)Math.Sqrt(distX * distX + distY * distY);
@@ -780,11 +780,11 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                 {
                     velocity *= 0.98f;
                 }
-                if ((double)velocity.X > -0.1 && (double)velocity.X < 0.1)
+                if (velocity.X > -0.1 && velocity.X < 0.1)
                 {
                     velocity.X = 0f;
                 }
-                if ((double)velocity.Y > -0.1 && (double)velocity.Y < 0.1)
+                if (velocity.Y > -0.1 && velocity.Y < 0.1)
                 {
                     velocity.Y = 0f;
                 }
@@ -798,7 +798,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
             {
                 ticksSpentCharging = 90;
             }
-            if (attackModeTicks >= (float)ticksSpentCharging)
+            if (attackModeTicks >= ticksSpentCharging)
             {
                 attackPartTicks += 1f;
                 attackModeTicks = 0f;
@@ -822,7 +822,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
         }
         else if (currentAttackMode == 3f)
         {
-            Vector2 eocCenter = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
+            Vector2 eocCenter = new Vector2(position.X + width * 0.5f, position.Y + height * 0.5f);
             if (attackPartTicks == 4f && expertUnder12Percent && eocCenter.Y > target.position.Y)
             {
                 currentAttackMode = 0f;
@@ -856,24 +856,24 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                 maxSpeed *= 2;
                 distX -= target.xVelocity * playerSpeed;
                 distY -= target.yVelocity * playerSpeed / 4f;
-                distX *= 1f + (float)Game1.random.Next(-10, 11) * 0.01f * 2;
-                distY *= 1f + (float)Game1.random.Next(-10, 11) * 0.01f * 2;
+                distX *= 1f + Game1.random.Next(-10, 11) * 0.01f * 2;
+                distY *= 1f + Game1.random.Next(-10, 11) * 0.01f * 2;
                 if (expertUnder4Percent)
                 {
-                    distX *= 1f + (float)Game1.random.Next(-10, 11) * 0.01f * 2;
-                    distY *= 1f + (float)Game1.random.Next(-10, 11) * 0.01f * 2;
+                    distX *= 1f + Game1.random.Next(-10, 11) * 0.01f * 2;
+                    distY *= 1f + Game1.random.Next(-10, 11) * 0.01f * 2;
                 }
                 float speedScale = (float)Math.Sqrt(distX * distX + distY * distY);
                 float targetDistance = speedScale;
                 speedScale = maxSpeed / speedScale;
                 velocity.X = distX * speedScale;
                 velocity.Y = distY * speedScale;
-                velocity.X += (float)Game1.random.Next(-20, 21) * 0.1f * 2;
-                velocity.Y += (float)Game1.random.Next(-20, 21) * 0.1f * 2;
+                velocity.X += Game1.random.Next(-20, 21) * 0.1f * 2;
+                velocity.Y += Game1.random.Next(-20, 21) * 0.1f * 2;
                 if (expertUnder4Percent)
                 {
-                    velocity.X += (float)Game1.random.Next(-50, 51) * 0.1f * 2;
-                    velocity.Y += (float)Game1.random.Next(-50, 51) * 0.1f * 2;
+                    velocity.X += Game1.random.Next(-50, 51) * 0.1f * 2;
+                    velocity.Y += Game1.random.Next(-50, 51) * 0.1f * 2;
                     float speedX = Math.Abs(velocity.X);
                     float speedY = Math.Abs(velocity.Y);
                     if (eocCenter.X > target.position.X)
@@ -888,8 +888,8 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                     velocity.Y = speedX + velocity.Y;
                     velocity.Normalize();
                     velocity *= maxSpeed;
-                    velocity.X += (float)Game1.random.Next(-20, 21) * 0.1f * 2;
-                    velocity.Y += (float)Game1.random.Next(-20, 21) * 0.1f * 2;
+                    velocity.X += Game1.random.Next(-20, 21) * 0.1f * 2;
+                    velocity.Y += Game1.random.Next(-20, 21) * 0.1f * 2;
                 }
                 else if (targetDistance < 100f)
                 {
@@ -931,7 +931,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
         {
             if (attackModeTicks == 0f)
             {
-                base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_EoC Expert Roar");
+                currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_EoC Expert Roar");
             }
             float num62 = num4;
             attackModeTicks += 1f;
@@ -942,11 +942,11 @@ public class EyeOfCthulhu : ITerrariaBossEntity
             if (attackModeTicks >= num62)
             {
                 velocity *= 0.95f;
-                if ((double)velocity.X > -0.1 && (double)velocity.X < 0.1)
+                if (velocity.X > -0.1 && velocity.X < 0.1)
                 {
                     velocity.X = 0f;
                 }
-                if ((double)velocity.Y > -0.1 && (double)velocity.Y < 0.1)
+                if (velocity.Y > -0.1 && velocity.Y < 0.1)
                 {
                     velocity.Y = 0f;
                 }
@@ -966,7 +966,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
                     attackPartTicks = 0f;
                     if (target != null && ModEntry.getGoodWorld && GetBoundingBox().Intersects(target.GetBoundingBox()))
                     {
-                        base.currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Roar 0");
+                        currentLocation.playSound($"GlitchedDeveloper.TerrariaBosses_Roar 0");
                         currentPhase = 2f;
                         currentAttackMode = 0f;
                         attackModeTicks = 0f;
@@ -987,7 +987,7 @@ public class EyeOfCthulhu : ITerrariaBossEntity
             distAboveY *= 2;
             maxSpeed *= 2;
             acceleration *= 2;
-            Vector2 vector11 = new Vector2(position.X + (float)width * 0.5f, position.Y + (float)height * 0.5f);
+            Vector2 vector11 = new Vector2(position.X + width * 0.5f, position.Y + height * 0.5f);
             float speedX = target.position.X - vector11.X;
             float speedY = target.position.Y + distAboveY - vector11.Y;
             float speedScale = (float)Math.Sqrt(speedX * speedX + speedY * speedY);
